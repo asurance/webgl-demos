@@ -1,4 +1,43 @@
-.body {
+html, body {
     height: 100%;
-    background-color: darkgray;
+    margin: 0px;
+}
+
+#main-container {
+    display: flex;
+    height: 100%;
+}
+
+#title-container {
+    padding: 20px;
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    background-color: gainsboro;
+    align-items: center;
+}
+
+#title-container button {
+    margin: 5px;
+    border-width: 0px;
+    width: 80px;
+    outline: none;
+    user-select: none;
+    background: linear-gradient(135deg, #6e8efb, #a777e3);
+    box-shadow: 2px 2px;
+}
+
+#title-container button[select] {
+    box-shadow: none;
+}
+
+#title-container button:disabled {
+    filter: grayscale(1);
+}
+
+#canvas-container {
+    display: flex;
+    flex-grow: 1;
+    justify-content: center;
+    align-items: center;
 }

@@ -18,6 +18,17 @@ const config = {
                 exclude: /[\\/]node_modules[\\/]/,
             },
             {
+                test: /\.(?:glsl|vert|frag)$/,
+                loader: 'webpack-glsl-minify',
+                options: {
+                    output: 'source'
+                }
+            },
+            {
+                test: /\.(?:png|jpe?g|gif|svg)$/,
+                loader: 'file-loader',
+            },
+            {
                 test: /\.css$/,
                 use: ExtractTextPlugin.extract({ fallback: 'style-loader', use: 'css-loader' })
             }
@@ -30,10 +41,10 @@ const config = {
         new ExtractTextPlugin('index.css')
     ],
     resolve: {
-        extensions: ['.ts', '.js']
+        extensions: ['.ts', '.js', '.glsl', '.vert', '.frag']
     },
     output: {
-        filename: '[name].js',
+        filename: '[hash].js',
         path: resolve(__dirname, '../public')
     }
 } as Configuration
