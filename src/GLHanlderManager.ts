@@ -1,14 +1,15 @@
 import { ProceduralTexture } from './ProceduralTexture./ProceduralTexture'
-import type { GLHandler } from './GLHandler'
 import { ClearColor } from './ClearColor/ClearColor'
+import { Mask } from './Mask/Mask'
+import type { GLHandler } from './GLHandler'
 
 export class GLHandlerManager {
     private handlers: GLHandler[]
     private titles: HTMLButtonElement[]
     private gl: WebGLRenderingContext
     private curIndex = -1
-    constructor(private titleContainer: HTMLDivElement, private canvas: HTMLCanvasElement) {
-        const gl = canvas.getContext('webgl')
+    constructor(titleContainer: HTMLDivElement, private canvas: HTMLCanvasElement) {
+        const gl = canvas.getContext('webgl', { stencil: true })
         if (gl) {
             this.gl = gl
         } else {
@@ -17,6 +18,7 @@ export class GLHandlerManager {
         this.handlers = [
             new ClearColor(),
             new ProceduralTexture(),
+            new Mask(),
         ]
         this.titles = this.handlers.map((h, i) => {
             const title = document.createElement('button')

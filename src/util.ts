@@ -71,3 +71,27 @@ export function CreateBuffer(gl: WebGLRenderingContext): WebGLBuffer {
         throw new Error('创建buffer时出错')
     }
 }
+
+export function CreateTexture2D(gl: WebGLRenderingContext, source: HTMLImageElement): WebGLTexture {
+    const texture = gl.createTexture()
+    if (texture) {
+        gl.bindTexture(gl.TEXTURE_2D, texture)
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+        gl.bindTexture(gl.TEXTURE_2D, null)
+        return texture
+    } else {
+        throw new Error('创建texture时出错')
+    }
+}
+
+export function LoadImage(url: string): Promise<HTMLImageElement> {
+    return new Promise<HTMLImageElement>(resolve => {
+        const image = new Image()
+        image.onload = resolve.bind(null, image)
+        image.src = url
+    })
+}

@@ -45,11 +45,6 @@ export class ProceduralTexture extends GLHandler {
         this.mouseY = y
         this.mouseDirty = true
     }
-    onmouseout(x: number, y: number): void {
-        this.mouseX = x
-        this.mouseY = y
-        this.mouseDirty = true
-    }
     private render = (): void => {
         const now = Date.now()
         this.gl!.uniform1f(this.timeLocation, (now - this.startTime) / 1000)
@@ -71,6 +66,8 @@ export class ProceduralTexture extends GLHandler {
         this.gl!.bindBuffer(this.gl!.ARRAY_BUFFER, null)
         this.gl!.deleteBuffer(this.vertexBuffer)
         this.gl = null
+        this.program = null
+        this.vertexBuffer = null
         this.timeLocation = null
         this.mouseLocation = null
     }

@@ -11,3 +11,7 @@ declare module '*.frag' {
     const context: string
     export default context
 }
+declare module '*.jpg' {
+    const context: string
+    export default context
+}
