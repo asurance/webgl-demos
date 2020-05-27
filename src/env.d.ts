@@ -15,3 +15,13 @@ declare module '*.jpg' {
     const context: string
     export default context
 }
+
+declare module '*.png' {
+    const context: string
+    export default context
+}
+
+declare module '*.bin' {
+    const context: string
+    export default context
+}

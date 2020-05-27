@@ -1,6 +1,7 @@
 import { ProceduralTexture } from './ProceduralTexture./ProceduralTexture'
 import { ClearColor } from './ClearColor/ClearColor'
 import { Mask } from './Mask/Mask'
+import { Model } from './Model/Model'
 import type { GLHandler } from './GLHandler'
 
 export class GLHandlerManager {
@@ -19,16 +20,21 @@ export class GLHandlerManager {
             new ClearColor(),
             new ProceduralTexture(),
             new Mask(),
+            new Model(),
         ]
         this.titles = this.handlers.map((h, i) => {
             const title = document.createElement('button')
-            if (h.load) {
+            if (h.test && !h.test(gl)) {
                 title.disabled = true
-                h.load().then(() => {
-                    title.disabled = false
-                })
             } else {
-                title.disabled = false
+                if (h.load) {
+                    title.disabled = true
+                    h.load().then(() => {
+                        title.disabled = false
+                    })
+                } else {
+                    title.disabled = false
+                }
             }
             title.innerText = h.title
             title.onclick = (): void => {

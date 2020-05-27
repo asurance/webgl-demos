@@ -25,7 +25,7 @@ const config = {
                 }
             },
             {
-                test: /\.(?:png|jpe?g|gif|svg)$/,
+                test: /\.(?:png|jpe?g|gif|svg|bin)$/,
                 loader: 'file-loader',
             },
             {

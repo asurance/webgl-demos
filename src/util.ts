@@ -95,3 +95,64 @@ export function LoadImage(url: string): Promise<HTMLImageElement> {
         image.src = url
     })
 }
+
+export function LoadBin(url: string): Promise<ArrayBuffer> {
+    return new Promise<ArrayBuffer>(resolve => {
+        const request = new XMLHttpRequest()
+        request.open('GET', url)
+        request.responseType = 'arraybuffer'
+        request.onload = (): void => resolve(request.response)
+        request.send()
+    })
+}
+
+export function GetProjection(angle: number, a: number, zMin: number, zMax: number): number[] {
+    const tan = Math.tan(angle * Math.PI / 360)
+    const A = -(zMax + zMin) / (zMax - zMin)
+    const B = (-2 * zMax * zMin) / (zMax - zMin)
+    return [
+        1 / tan / 2, 0, 0, 0,
+        0, a / tan / 2, 0, 0,
+        0, 0, A, -1,
+        0, 0, B, 0
+    ]
+}
+
+export function GetTranslation(x: number, y: number, z: number): number[] {
+    return [
+        1, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 1, 0,
+        x, y, z, 1,
+    ]
+}
+export function GetRotateX(angle: number): number[] {
+    const cos = Math.cos(angle / 180 * Math.PI)
+    const sin = Math.sin(angle / 180 * Math.PI)
+    return [
+        1, 0, 0, 0,
+        0, cos, sin, 0,
+        0, -sin, cos, 0,
+        0, 0, 0, 1,
+    ]
+}
+export function GetRotateY(angle: number): number[] {
+    const cos = Math.cos(angle / 180 * Math.PI)
+    const sin = Math.sin(angle / 180 * Math.PI)
+    return [
+        cos, 0, -sin, 0,
+        0, 1, 0, 0,
+        sin, 0, cos, 0,
+        0, 0, 0, 1,
+    ]
+}
+export function GetRotateZ(angle: number): number[] {
+    const cos = Math.cos(angle / 180 * Math.PI)
+    const sin = Math.sin(angle / 180 * Math.PI)
+    return [
+        cos, sin, 0, 0,
+        -sin, cos, 0, 0,
+        0, 0, 1, 0,
+        0, 0, 0, 1,
+    ]
+}

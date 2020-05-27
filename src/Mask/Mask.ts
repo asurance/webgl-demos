@@ -19,7 +19,6 @@ export class Mask extends GLHandler {
     private maskP = 0
     private waterUV = 0
     private maskUV = 0
-    private texLocation: WebGLUniformLocation | null = null
     private enabled: number[] = []
 
     async load(): Promise<void> {
@@ -27,8 +26,11 @@ export class Mask extends GLHandler {
     }
     enter(gl: WebGLRenderingContext): void {
         this.gl = gl
+        gl.clearColor(0, 0, 0, 0)
+        gl.clear(gl.COLOR_BUFFER_BIT)
         this.waterProgram = CreateProgram(gl, vert, frag)
         this.maskProgram = CreateProgram(gl, vert, mask)
+        gl.activeTexture(gl.TEXTURE0)
         this.waterTexture = CreateTexture2D(gl, this.water!)
         this.waterBuffer = CreateBuffer(gl)
         this.maskBuffer = CreateBuffer(gl)
@@ -40,7 +42,10 @@ export class Mask extends GLHandler {
         this.maskP = gl.getAttribLocation(this.maskProgram, 'position')
         this.waterUV = gl.getAttribLocation(this.waterProgram, 'uv')
         this.maskUV = gl.getAttribLocation(this.maskProgram, 'uv')
-        this.texLocation = gl.getUniformLocation(this.waterProgram, 'tex')
+        const texLocation = gl.getUniformLocation(this.waterProgram, 'tex')
+        gl.activeTexture(gl.TEXTURE0)
+        gl.bindTexture(gl.TEXTURE_2D, this.waterTexture)
+        gl.uniform1i(texLocation, 0)
         gl.stencilOp(gl.KEEP, gl.KEEP, gl.REPLACE)
         gl.enable(gl.STENCIL_TEST)
         this.render(0.5, 0.5)
@@ -69,9 +74,6 @@ export class Mask extends GLHandler {
         this.enable([this.waterP, this.waterUV])
         this.gl!.vertexAttribPointer(this.waterP, 2, this.gl!.FLOAT, false, 16, 0)
         this.gl!.vertexAttribPointer(this.waterUV, 2, this.gl!.FLOAT, false, 16, 8)
-        this.gl!.activeTexture(this.gl!.TEXTURE0)
-        this.gl!.bindTexture(this.gl!.TEXTURE_2D, this.waterTexture)
-        this.gl!.uniform1i(this.texLocation, 0)
         this.gl!.drawArrays(this.gl!.TRIANGLES, 0, 6)
     }
 
@@ -99,7 +101,6 @@ export class Mask extends GLHandler {
         this.waterProgram = null
         this.maskProgram = null
         this.waterTexture = null
-        this.texLocation = null
     }
 
     private enable(indice: number[]): void {
