@@ -35,9 +35,9 @@ export class Mask extends GLHandler {
         this.waterBuffer = CreateBuffer(gl)
         this.maskBuffer = CreateBuffer(gl)
         gl.bindBuffer(gl.ARRAY_BUFFER, this.waterBuffer)
-        gl.bufferData(gl.ARRAY_BUFFER, Float32Array.of(-1, -1, 0, 1, 1, -1, 1, 1, 1, 1, 1, 0, -1, -1, 0, 1, 1, 1, 1, 0, -1, 1, 0, 0), gl.STATIC_DRAW)
+        gl.bufferData(gl.ARRAY_BUFFER, Float32Array.of(-1, -1, 0, 0, 1, -1, 1, 0, 1, 1, 1, 1, -1, -1, 0, 0, 1, 1, 1, 1, -1, 1, 0, 1), gl.STATIC_DRAW)
         gl.bindBuffer(gl.ARRAY_BUFFER, this.maskBuffer)
-        gl.bufferData(gl.ARRAY_BUFFER, Float32Array.of(), gl.DYNAMIC_DRAW)
+        gl.bufferData(gl.ARRAY_BUFFER, 96, gl.DYNAMIC_DRAW)
         this.waterP = gl.getAttribLocation(this.waterProgram, 'position')
         this.maskP = gl.getAttribLocation(this.maskProgram, 'position')
         this.waterUV = gl.getAttribLocation(this.waterProgram, 'uv')
@@ -45,6 +45,7 @@ export class Mask extends GLHandler {
         const texLocation = gl.getUniformLocation(this.waterProgram, 'tex')
         gl.activeTexture(gl.TEXTURE0)
         gl.bindTexture(gl.TEXTURE_2D, this.waterTexture)
+        gl.useProgram(this.waterProgram)
         gl.uniform1i(texLocation, 0)
         gl.stencilOp(gl.KEEP, gl.KEEP, gl.REPLACE)
         gl.enable(gl.STENCIL_TEST)
@@ -58,9 +59,9 @@ export class Mask extends GLHandler {
         this.gl!.colorMask(false, false, false, false)
         this.gl!.stencilFunc(this.gl!.ALWAYS, 1, 0xFF)
         this.gl!.bindBuffer(this.gl!.ARRAY_BUFFER, this.maskBuffer)
-        this.gl!.bufferData(this.gl!.ARRAY_BUFFER, Float32Array.of(
+        this.gl!.bufferSubData(this.gl!.ARRAY_BUFFER, 0, Float32Array.of(
             x - .1, y - .1, 0, 1, x + .1, y - .1, 1, 1, x + .1, y + .1, 1, 0, x - .1, y - .1, 0, 1, x + .1, y + .1, 1, 0, x - .1, y + .1, 0, 0
-        ), this.gl!.DYNAMIC_DRAW)
+        ))
         this.gl!.useProgram(this.maskProgram)
         this.enable([this.maskP, this.maskUV])
         this.gl!.vertexAttribPointer(this.maskP, 2, this.gl!.FLOAT, false, 16, 0)

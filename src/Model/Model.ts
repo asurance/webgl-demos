@@ -18,7 +18,6 @@ export class Model implements GLHandler {
     private indiceBuffer: WebGLBuffer | null = null
     private program: WebGLProgram | null = null
     private positionIndex = 0
-    private normalIndex = 0
     private uvIndex = 0
     private mLocation: WebGLUniformLocation | null = null
     private renderId: number | null = null
@@ -65,9 +64,6 @@ export class Model implements GLHandler {
         this.positionIndex = gl.getAttribLocation(this.program, 'position')
         gl.enableVertexAttribArray(this.positionIndex)
         gl.vertexAttribPointer(this.positionIndex, 3, gl.FLOAT, false, 32, 0)
-        this.normalIndex = gl.getAttribLocation(this.program, 'normal')
-        gl.enableVertexAttribArray(this.normalIndex)
-        gl.vertexAttribPointer(this.normalIndex, 3, gl.FLOAT, false, 32, 12)
         this.uvIndex = gl.getAttribLocation(this.program, 'uv')
         gl.enableVertexAttribArray(this.uvIndex)
         gl.vertexAttribPointer(this.uvIndex, 2, gl.FLOAT, false, 32, 24)
@@ -81,10 +77,14 @@ export class Model implements GLHandler {
         const p = GetProjection(40, gl.canvas.width / gl.canvas.height, 1, 100)
         gl.uniformMatrix4fv(pLocation, false, p)
         this.startTime = Date.now()
+        this.gl.clearColor(0, 0, 0, 1)
+        gl.enable(gl.CULL_FACE)
+        gl.enable(gl.DEPTH_TEST)
         this.render()
         return true
     }
     private render = (): void => {
+        this.gl!.clear(this.gl!.COLOR_BUFFER_BIT | this.gl!.DEPTH_BUFFER_BIT)
         const now = Date.now()
         const angle = (now - this.startTime) / 1000 * 60
         this.gl!.uniformMatrix4fv(this.mLocation, false, GetRotateY(angle))
@@ -92,12 +92,13 @@ export class Model implements GLHandler {
         this.renderId = requestAnimationFrame(this.render)
     }
     leave(): void {
+        this.gl!.disable(this.gl!.CULL_FACE)
+        this.gl!.disable(this.gl!.DEPTH_TEST)
         if (this.renderId !== null) {
             cancelAnimationFrame(this.renderId)
             this.renderId = null
         }
         this.gl!.disableVertexAttribArray(this.positionIndex)
-        this.gl!.disableVertexAttribArray(this.normalIndex)
         this.gl!.disableVertexAttribArray(this.uvIndex)
         this.gl!.bindTexture(this.gl!.TEXTURE_2D, null)
         this.gl!.deleteTexture(this.dragonTexture)

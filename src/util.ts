@@ -76,6 +76,7 @@ export function CreateTexture2D(gl: WebGLRenderingContext, source: HTMLImageElem
     const texture = gl.createTexture()
     if (texture) {
         gl.bindTexture(gl.TEXTURE_2D, texture)
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true)
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source)
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
@@ -101,6 +102,16 @@ export function LoadBin(url: string): Promise<ArrayBuffer> {
         const request = new XMLHttpRequest()
         request.open('GET', url)
         request.responseType = 'arraybuffer'
+        request.onload = (): void => resolve(request.response)
+        request.send()
+    })
+}
+
+export function LoadJSON<T>(url: string): Promise<T> {
+    return new Promise<T>(resolve => {
+        const request = new XMLHttpRequest()
+        request.open('GET', url)
+        request.responseType = 'json'
         request.onload = (): void => resolve(request.response)
         request.send()
     })
