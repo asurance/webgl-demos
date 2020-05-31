@@ -1,7 +1,8 @@
-import { ProceduralTexture } from './ProceduralTexture./ProceduralTexture'
+import { ProceduralTexture } from './ProceduralTexture/ProceduralTexture'
 import { ClearColor } from './ClearColor/ClearColor'
 import { Mask } from './Mask/Mask'
 import { Model } from './Model/Model'
+import { RenderTexture } from './RenderTexture/RenderTexture'
 import type { GLHandler } from './GLHandler'
 
 export class GLHandlerManager {
@@ -21,6 +22,7 @@ export class GLHandlerManager {
             new ProceduralTexture(),
             new Mask(),
             new Model(),
+            new RenderTexture(),
         ]
         this.titles = this.handlers.map((h, i) => {
             const title = document.createElement('button')

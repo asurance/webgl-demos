@@ -1,4 +1,3 @@
-/* Main function, uniforms & utils */
 #ifdef GL_ES
 precision mediump float;
 #endif
@@ -7,31 +6,23 @@ uniform vec2 u_resolution;
 uniform vec2 u_mouse;
 uniform float u_time;
 
-/* Coordinate and unit utils */
-vec2 coord(in vec2 p){
-    p=p/u_resolution.xy;
-    // correct aspect ratio
-    if(u_resolution.x>u_resolution.y){
-        p.x*=u_resolution.x/u_resolution.y;
-        p.x+=(u_resolution.y-u_resolution.x)/u_resolution.y/2.;
-    }else{
-        p.y*=u_resolution.y/u_resolution.x;
-        p.y+=(u_resolution.x-u_resolution.y)/u_resolution.x/2.;
-    }
-    // centering
-    p-=.5;
-    p*=vec2(-1.,1.);
-    return p;
+float circle(vec2 uv,vec2 center){
+    return smoothstep(.4,.5,length(uv-center));
 }
 
 void main(){
-    vec2 st = coord(gl_FragCoord.xy);
-    vec2 mx = coord(u_mouse);
-    vec3 color=vec3(
-        abs(cos(st.x+mx.x)),
-        abs(sin(st.y+mx.y)),
-        abs(sin(u_time))
-    );
-    
-    gl_FragColor=vec4(color,1.);
+    vec2 uv=gl_FragCoord.xy/vec2(50.,50.);
+    vec2 coord=mod(floor(uv),2.)*2.-1.;
+    vec2 center=vec2(.5,.5);
+    vec2 center2;
+    uv=fract(uv);
+    vec2 timeMod=mod(floor(vec2(u_time)+vec2(0.,1.)),2.);
+    vec2 scale=coord*timeMod;
+    center.y+=scale.x*fract(u_time);
+    center2.y=center.y-scale.x;
+    center.x+=scale.y*fract(u_time);
+    center2.x=center.x-scale.y;
+    float value=circle(uv,center);
+    value*=circle(uv,center2);
+    gl_FragColor=vec4(vec3(value),1.);
 }

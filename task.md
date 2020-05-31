@@ -1,4 +1,3 @@
 * [ ] 光源/场景
 * [ ] shadow
-* [ ] CI
-* [ ] rendertexture
+* [ ] 完善RenderTexture,清理attribute

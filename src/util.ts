@@ -89,6 +89,31 @@ export function CreateTexture2D(gl: WebGLRenderingContext, source: HTMLImageElem
     }
 }
 
+export function CreateEmptyTexture2D(gl: WebGLRenderingContext): WebGLTexture {
+    const texture = gl.createTexture()
+    if (texture) {
+        gl.bindTexture(gl.TEXTURE_2D, texture)
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.canvas.width, gl.canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+        gl.bindTexture(gl.TEXTURE_2D, null)
+        return texture
+    } else {
+        throw new Error('创建texture时出错')
+    }
+}
+
+export function CreateFrameBuffer(gl: WebGLRenderingContext): WebGLFramebuffer {
+    const frameBuffer = gl.createFramebuffer()
+    if (frameBuffer) {
+        return frameBuffer
+    } else {
+        throw new Error('创建framebuffer时出错')
+    }
+}
+
 export function LoadImage(url: string): Promise<HTMLImageElement> {
     return new Promise<HTMLImageElement>(resolve => {
         const image = new Image()
@@ -166,4 +191,39 @@ export function GetRotateZ(angle: number): number[] {
         0, 0, 1, 0,
         0, 0, 0, 1,
     ]
+}
+
+export function ClearColorByValue(gl: WebGLRenderingContext, value: number): void {
+    let r = 0
+    let g = 0
+    let b = 0
+    const rest = value % 1
+    switch (Math.floor(value % 6)) {
+        case 0:
+            r = 1
+            b = 1 - rest
+            break
+        case 1:
+            r = 1
+            g = rest
+            break
+        case 2:
+            r = 1 - rest
+            g = 1
+            break
+        case 3:
+            g = 1
+            b = rest
+            break
+        case 4:
+            g = 1 - rest
+            b = 1
+            break
+        case 5:
+            r = rest
+            b = 1
+            break
+    }
+    gl.clearColor(r, g, b, 1)
+    gl.clear(gl.COLOR_BUFFER_BIT)
 }
