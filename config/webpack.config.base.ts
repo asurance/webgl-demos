@@ -45,7 +45,7 @@ const config = {
     },
     output: {
         filename: '[hash].js',
-        path: resolve(__dirname, '../doc')
+        path: resolve(__dirname, '../docs')
     }
 } as Configuration
 
