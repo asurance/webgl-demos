@@ -63,10 +63,10 @@ export class Model implements GLHandler {
         gl.bindTexture(gl.TEXTURE_2D, this.dragonTexture)
         this.positionIndex = gl.getAttribLocation(this.program, 'position')
         gl.enableVertexAttribArray(this.positionIndex)
-        gl.vertexAttribPointer(this.positionIndex, 3, gl.FLOAT, false, 32, 0)
+        gl.vertexAttribPointer(this.positionIndex, 3, gl.FLOAT, false, 20, 0)
         this.uvIndex = gl.getAttribLocation(this.program, 'uv')
         gl.enableVertexAttribArray(this.uvIndex)
-        gl.vertexAttribPointer(this.uvIndex, 2, gl.FLOAT, false, 32, 24)
+        gl.vertexAttribPointer(this.uvIndex, 2, gl.FLOAT, false, 20, 12)
         const texLocation = gl.getUniformLocation(this.program, 'tex')!
         gl.uniform1i(texLocation, 0)
         this.mLocation = gl.getUniformLocation(this.program, 'm')
