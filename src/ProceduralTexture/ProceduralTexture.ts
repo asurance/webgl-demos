@@ -47,12 +47,13 @@ export class ProceduralTexture extends GLHandler {
     }
     private render = (): void => {
         const now = Date.now()
-        this.gl!.uniform1f(this.timeLocation, (now - this.startTime) / 1000)
+        const gl = this.gl!
+        gl.uniform1f(this.timeLocation, (now - this.startTime) / 1000)
         if (this.mouseDirty) {
-            this.gl!.uniform2f(this.mouseLocation, this.mouseX, this.mouseY)
+            gl.uniform2f(this.mouseLocation, this.mouseX, this.mouseY)
             this.mouseDirty = false
         }
-        this.gl!.drawArrays(this.gl!.TRIANGLES, 0, 6)
+        gl.drawArrays(gl.TRIANGLES, 0, 6)
         this.renderId = requestAnimationFrame(this.render)
     }
     leave(): void {
@@ -60,11 +61,12 @@ export class ProceduralTexture extends GLHandler {
             cancelAnimationFrame(this.renderId)
             this.renderId = null
         }
-        this.gl!.disableVertexAttribArray(this.positionIndex)
-        this.gl!.useProgram(null)
-        this.gl!.deleteProgram(this.program)
-        this.gl!.bindBuffer(this.gl!.ARRAY_BUFFER, null)
-        this.gl!.deleteBuffer(this.vertexBuffer)
+        const gl = this.gl!
+        gl.disableVertexAttribArray(this.positionIndex)
+        gl.useProgram(null)
+        gl.deleteProgram(this.program)
+        gl.bindBuffer(gl.ARRAY_BUFFER, null)
+        gl.deleteBuffer(this.vertexBuffer)
         this.gl = null
         this.program = null
         this.vertexBuffer = null

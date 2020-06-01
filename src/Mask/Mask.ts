@@ -55,48 +55,52 @@ export class Mask extends GLHandler {
     private render(x: number, y: number): void {
         x = x * 2 - 1
         y = 1 - y * 2
-        this.gl!.clear(this.gl!.STENCIL_BUFFER_BIT)
-        this.gl!.colorMask(false, false, false, false)
-        this.gl!.stencilFunc(this.gl!.ALWAYS, 1, 0xFF)
-        this.gl!.bindBuffer(this.gl!.ARRAY_BUFFER, this.maskBuffer)
-        this.gl!.bufferSubData(this.gl!.ARRAY_BUFFER, 0, Float32Array.of(
+        const gl = this.gl!
+        gl.clear(gl.STENCIL_BUFFER_BIT)
+        gl.colorMask(false, false, false, false)
+        gl.stencilFunc(gl.ALWAYS, 1, 0xFF)
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.maskBuffer)
+        gl.bufferSubData(gl.ARRAY_BUFFER, 0, Float32Array.of(
             x - .1, y - .1, 0, 1, x + .1, y - .1, 1, 1, x + .1, y + .1, 1, 0, x - .1, y - .1, 0, 1, x + .1, y + .1, 1, 0, x - .1, y + .1, 0, 0
         ))
-        this.gl!.useProgram(this.maskProgram)
+        gl.useProgram(this.maskProgram)
         this.enable([this.maskP, this.maskUV])
-        this.gl!.vertexAttribPointer(this.maskP, 2, this.gl!.FLOAT, false, 16, 0)
-        this.gl!.vertexAttribPointer(this.maskUV, 2, this.gl!.FLOAT, false, 16, 8)
-        this.gl!.drawArrays(this.gl!.TRIANGLES, 0, 6)
+        gl.vertexAttribPointer(this.maskP, 2, gl.FLOAT, false, 16, 0)
+        gl.vertexAttribPointer(this.maskUV, 2, gl.FLOAT, false, 16, 8)
+        gl.drawArrays(gl.TRIANGLES, 0, 6)
 
-        this.gl!.colorMask(true, true, true, true)
-        this.gl!.stencilFunc(this.gl!.EQUAL, 1, 0xFF)
-        this.gl!.bindBuffer(this.gl!.ARRAY_BUFFER, this.waterBuffer)
-        this.gl!.useProgram(this.waterProgram)
+        gl.colorMask(true, true, true, true)
+        gl.stencilFunc(gl.EQUAL, 1, 0xFF)
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.waterBuffer)
+        gl.useProgram(this.waterProgram)
         this.enable([this.waterP, this.waterUV])
-        this.gl!.vertexAttribPointer(this.waterP, 2, this.gl!.FLOAT, false, 16, 0)
-        this.gl!.vertexAttribPointer(this.waterUV, 2, this.gl!.FLOAT, false, 16, 8)
-        this.gl!.drawArrays(this.gl!.TRIANGLES, 0, 6)
+        gl.vertexAttribPointer(this.waterP, 2, gl.FLOAT, false, 16, 0)
+        gl.vertexAttribPointer(this.waterUV, 2, gl.FLOAT, false, 16, 8)
+        gl.drawArrays(gl.TRIANGLES, 0, 6)
     }
 
     onmouseover(x: number, y: number): void {
-        this.render(x / this.gl!.canvas.width, y / this.gl!.canvas.height)
+        const gl = this.gl!
+        this.render(x / gl.canvas.width, y / gl.canvas.height)
     }
 
     onmousemove(x: number, y: number): void {
-        this.render(x / this.gl!.canvas.width, y / this.gl!.canvas.height)
+        const gl = this.gl!
+        this.render(x / gl.canvas.width, y / gl.canvas.height)
     }
 
     leave(): void {
-        this.gl!.stencilOp(this.gl!.KEEP, this.gl!.KEEP, this.gl!.KEEP)
-        this.gl!.disable(this.gl!.STENCIL_TEST)
-        this.gl!.useProgram(null)
-        this.gl!.bindBuffer(this.gl!.ARRAY_BUFFER, null)
-        this.gl!.bindTexture(this.gl!.TEXTURE_2D, null)
-        this.gl!.deleteProgram(this.waterProgram)
-        this.gl!.deleteProgram(this.maskProgram)
-        this.gl!.deleteTexture(this.waterTexture)
-        this.gl!.deleteBuffer(this.waterBuffer)
-        this.gl!.deleteBuffer(this.maskBuffer)
+        const gl = this.gl!
+        gl.stencilOp(gl.KEEP, gl.KEEP, gl.KEEP)
+        gl.disable(gl.STENCIL_TEST)
+        gl.useProgram(null)
+        gl.bindBuffer(gl.ARRAY_BUFFER, null)
+        gl.bindTexture(gl.TEXTURE_2D, null)
+        gl.deleteProgram(this.waterProgram)
+        gl.deleteProgram(this.maskProgram)
+        gl.deleteTexture(this.waterTexture)
+        gl.deleteBuffer(this.waterBuffer)
+        gl.deleteBuffer(this.maskBuffer)
         this.enable([])
         this.gl = null
         this.waterProgram = null
@@ -105,10 +109,11 @@ export class Mask extends GLHandler {
     }
 
     private enable(indice: number[]): void {
+        const gl = this.gl!
         const needEnable = indice.filter((v) => this.enabled.indexOf(v) < 0)
         const needDisable = this.enabled.filter((v) => indice.indexOf(v) < 0)
-        needEnable.forEach((v) => this.gl!.enableVertexAttribArray(v))
-        needDisable.forEach((v) => this.gl!.disableVertexAttribArray(v))
+        needEnable.forEach((v) => gl.enableVertexAttribArray(v))
+        needDisable.forEach((v) => gl.disableVertexAttribArray(v))
         this.enabled = indice
     }
 }

@@ -13,7 +13,8 @@ export class ClearColor extends GLHandler {
     }
     private render = (): void => {
         const delta = (Date.now() - this.startTime) / 1000
-        ClearColorByValue(this.gl!, delta)
+        const gl = this.gl!
+        ClearColorByValue(gl, delta)
         this.renderId = requestAnimationFrame(this.render)
     }
     leave(): void {

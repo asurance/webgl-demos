@@ -84,33 +84,35 @@ export class Model implements GLHandler {
         return true
     }
     private render = (): void => {
-        this.gl!.clear(this.gl!.COLOR_BUFFER_BIT | this.gl!.DEPTH_BUFFER_BIT)
+        const gl = this.gl!
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
         const now = Date.now()
         const angle = (now - this.startTime) / 1000 * 60
-        this.gl!.uniformMatrix4fv(this.mLocation, false, GetRotateY(angle))
-        this.gl!.drawElements(this.gl!.TRIANGLES, this.indice!.length, this.gl!.UNSIGNED_INT, 0)
+        gl.uniformMatrix4fv(this.mLocation, false, GetRotateY(angle))
+        gl.drawElements(gl.TRIANGLES, this.indice!.length, gl.UNSIGNED_INT, 0)
         this.renderId = requestAnimationFrame(this.render)
     }
     leave(): void {
-        this.gl!.disable(this.gl!.CULL_FACE)
-        this.gl!.disable(this.gl!.DEPTH_TEST)
+        const gl = this.gl!
+        gl.disable(gl.CULL_FACE)
+        gl.disable(gl.DEPTH_TEST)
         if (this.renderId !== null) {
             cancelAnimationFrame(this.renderId)
             this.renderId = null
         }
-        this.gl!.disableVertexAttribArray(this.positionIndex)
-        this.gl!.disableVertexAttribArray(this.uvIndex)
-        this.gl!.bindTexture(this.gl!.TEXTURE_2D, null)
-        this.gl!.deleteTexture(this.dragonTexture)
+        gl.disableVertexAttribArray(this.positionIndex)
+        gl.disableVertexAttribArray(this.uvIndex)
+        gl.bindTexture(gl.TEXTURE_2D, null)
+        gl.deleteTexture(this.dragonTexture)
         this.dragonTexture = null
-        this.gl!.bindBuffer(this.gl!.ARRAY_BUFFER, null)
-        this.gl!.deleteBuffer(this.verticeBuffer)
+        gl.bindBuffer(gl.ARRAY_BUFFER, null)
+        gl.deleteBuffer(this.verticeBuffer)
         this.verticeBuffer = null
-        this.gl!.bindBuffer(this.gl!.ELEMENT_ARRAY_BUFFER, null)
-        this.gl!.deleteBuffer(this.indiceBuffer)
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null)
+        gl.deleteBuffer(this.indiceBuffer)
         this.indiceBuffer = null
-        this.gl!.useProgram(null)
-        this.gl!.deleteProgram(this.program)
+        gl.useProgram(null)
+        gl.deleteProgram(this.program)
         this.mLocation = null
         this.program = null
         this.gl = null
